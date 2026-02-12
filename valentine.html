@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Valentine's Day!</title>
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: #ffe6f0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-align: center;
+    color: #d10068;
+    padding: 20px;
+    overflow: hidden;
+    transition: background 0.5s;
+}
+
+h1, p {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    word-break: break-word;
+}
+
+h1.show, p.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+button {
+    background-color: #ff6699;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-top: 25px;
+    transition: transform 0.2s;
+    max-width: 80%;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* Floating hearts animation */
+.heart {
+    position: absolute;
+    font-size: 2rem;
+    animation: float 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    50% { transform: translateY(-50px) scale(1.2); opacity: 0.7; }
+    100% { transform: translateY(-100px) scale(1); opacity: 0; }
+}
+
+/* Heart burst for final message */
+.heart-burst {
+    position: absolute;
+    font-size: 2rem;
+    animation: burst 1s ease forwards;
+}
+
+@keyframes burst {
+    0% { transform: scale(0) translate(0,0); opacity: 1; }
+    100% { transform: scale(2) translate(var(--x), var(--y)); opacity: 0; }
+}
+
+/* Responsive text */
+@media(max-width: 500px) {
+    h1 { font-size: 1.6rem; }
+    p { font-size: 1rem; }
+    .heart { font-size: 1.5rem; }
+    .heart-burst { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div>
+    <h1 id="messageTitle"></h1>
+    <p id="messageText"></p>
+    <button id="nextBtn">Reveal</button>
+</div>
+
+<script>
+const messages = [
+    {title: "Hey love! 💕", text: "Click below for a little surprise..."},
+    {title: "You make my heart skip a beat ❤️", text: "Click below to see more..."},
+    {title: "Every moment with you is magical ✨", text: "Are you ready for the next message?"},
+    {title: "I love how your smile lights up my day 😍", text: "Keep clicking for more..."},
+    {title: "You are my sunshine on a cloudy day 🌞", text: "Almost there..."},
+    {title: "Being with you feels like a dream come true 💖", text: "Get ready for the final surprise!"}
+];
+
+const finalMessage = {
+    title: "Happy Valentine’s Day, my love! 🌹",
+    text: "You are my everything, and I’ll spend forever making you smile ❤️"
+};
+
+let index = 0;
+
+const titleEl = document.getElementById('messageTitle');
+const textEl = document.getElementById('messageText');
+const btn = document.getElementById('nextBtn');
+
+function showMessage(i) {
+    titleEl.classList.remove('show');
+    textEl.classList.remove('show');
+
+    setTimeout(() => {
+        titleEl.textContent = messages[i].title;
+        textEl.textContent = messages[i].text;
+        titleEl.classList.add('show');
+        textEl.classList.add('show');
+        spawnHeart();
+    }, 300);
+}
+
+btn.addEventListener('click', () => {
+    index++;
+    if(index < messages.length) {
+        showMessage(index);
+    } else {
+        btn.style.display = 'none';
+        showFinalMessage();
+    }
+});
+
+// Initial message
+showMessage(index);
+
+// Function to spawn floating hearts
+function spawnHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '💖';
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+    heart.style.animationDuration = (2 + Math.random() * 2) + 's';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 3000);
+}
+
+// Final message with heart burst
+function showFinalMessage() {
+    titleEl.textContent = finalMessage.title;
+    textEl.textContent = finalMessage.text;
+    titleEl.classList.add('show');
+    textEl.classList.add('show');
+
+    // Burst hearts
+    for(let i=0; i<50; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-burst';
+        heart.textContent = '💘';
+        heart.style.left = window.innerWidth/2 + 'px';
+        heart.style.top = window.innerHeight/2 + 'px';
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = Math.random() * 200 + 50;
+        heart.style.setProperty('--x', Math.cos(angle) * radius + 'px');
+        heart.style.setProperty('--y', Math.sin(angle) * radius + 'px');
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1000);
+    }
+}
+</script>
+</body>
+</html>
